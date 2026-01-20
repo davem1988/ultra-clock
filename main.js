@@ -120,16 +120,7 @@ autoUpdater.on("update-downloaded", () => {
         return;
     }
     if (choice === 0) {
-        dialog.showMessageBox(mainWindow, {
-          type: "info",
-          buttons: ["Restart & Update"],
-          defaultId: 0,
-          title: "Ready to update",
-          message: "The update has been downloaded.",
-          detail: "UltraClock will restart to apply the update."
-        }).then(() => {
-          autoUpdater.quitAndInstall();
-        });
+        autoUpdater.quitAndInstall();
     }
 });
 

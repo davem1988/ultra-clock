@@ -1,11 +1,11 @@
 {
   "name": "ultra-clock",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "Desktop digital clock",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "build": "electron-builder"
+    "build": "electron-builder --win nsis"
   },
   "build": {
     "appId": "com.devexa.ultraclock",

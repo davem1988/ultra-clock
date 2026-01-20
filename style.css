@@ -12,6 +12,10 @@ body {
 
 }
 
+body:hover {
+    cursor: pointer;
+}
+
 #clock {
   font-size: 48px;
 }

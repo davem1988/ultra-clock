@@ -6,8 +6,18 @@ const { dialog } = require("electron");
 const fs = require("fs");
 const path = require("path");
 
+let updateAvailable = false;
+let updatePromptShown = false;
+let updateCheckInterval = null;
+
+function checkForUpdates() {
+  if (updateAvailable) return; // already found one
+  autoUpdater.checkForUpdates();
+}
+
 const versionFile = path.join(app.getPath("userData"), "version.json");
 let whatsNewWindow;
+let mainWindow = null;
 
 function showWhatsNewWindow(version) {
   whatsNewWindow = new BrowserWindow({
@@ -49,7 +59,7 @@ autoUpdater.logger.transports.file.level = "info";
 const path = require("path");
 
 function createWindow() {
-  const win = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 400,
     height: 150,
     icon: path.join(__dirname, "build/icon.png"),
@@ -63,12 +73,14 @@ function createWindow() {
     }
   });
 
-  win.loadFile("index.html");
+  mainWindow.loadFile("index.html");
   
 }
 
 app.whenReady().then(() => {
   createWindow();
+
+  
 
   const lastVersion = getLastVersion();
   const currentVersion = app.getVersion();
@@ -78,21 +90,30 @@ app.whenReady().then(() => {
   }
 
   saveCurrentVersion();
-  autoUpdater.checkForUpdates();
+  checkForUpdates();
+  // check every 30 minutes
+  updateCheckInterval = setInterval(checkForUpdates, 30 * 60 * 1000);
 });
 
 autoUpdater.on("update-available", () => {
-  choice = dialog.showMessageBoxSync(mainWindow, {
-    type: "question",
-    buttons: ["Update now", "Later"],
-    defaultId: 0,
-    cancelId: 1,
-    title: "Update available",
-    message: "A new version of UltraClock is available.",
-    detail: "Would you like to update now?"
-  });
 
-  autoUpdater.downloadUpdate();
+    updateAvailable = true;
+
+    if (updatePromptShown || !mainWindow) return;
+    
+    updatePromptShown = true;
+
+    choice = dialog.showMessageBoxSync(mainWindow, {
+      type: "question",
+      buttons: ["Update now", "Later"],
+      defaultId: 0,
+      cancelId: 1,
+      title: "Update available",
+      message: "A new version of UltraClock is available.",
+      detail: "Would you like to update now?"
+    });
+
+    autoUpdater.downloadUpdate();
 });
 
 autoUpdater.on("update-downloaded", () => {

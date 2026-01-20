@@ -1,9 +1,10 @@
 {
   "name": "ultra-clock",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "Desktop digital clock",
   "main": "main.js",
   "scripts": {
+    "dev": "electronmon .",
     "start": "electron .",
     "build": "electron-builder --win nsis"
   },
@@ -32,7 +33,8 @@
   "type": "commonjs",
   "devDependencies": {
     "electron": "^40.0.0",
-    "electron-builder": "^26.4.0"
+    "electron-builder": "^26.4.0",
+    "electronmon": "^2.0.4"
   },
   "dependencies": {
     "electron-log": "^5.4.3",

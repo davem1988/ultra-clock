@@ -6,13 +6,24 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="close-btn-container">
-    <button>✖</button>
+  <div id="main-container">
+
+    <div id="close-btn-container">
+      <button id="close-btn">X</button>
+    </div>
+
+    <div id="clock">00:00:00</div>
+
+    <div id="grab-icon-container">
+      <img id="grab-icon" src="build/drag.png" alt="drag-icon">
+    </div>
+
+    <div id="progress-container">
+      <div id="progress-bar"></div>
+    </div>
+
   </div>
-  <div id="clock">00:00:00</div>
-  <div id="progress-container">
-    <div id="progress-bar"></div>
-  </div>
+
 
   <script src="renderer.js"></script>
 </body>

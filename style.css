@@ -13,9 +13,42 @@ body {
 
 }
 
+#main-container {
+  width: 300px;
+  height: fit-content;
+}
+
 #clock {
   font-size: 48px;
-  cursor: pointer;              
+  cursor: pointer;
+  -webkit-app-region: no-drag; /* 👈 clickable */
+}
+
+#close-btn-container {
+  display: none;
+  position: absolute;
+  top: 0px;
+  right: 40px;
+  -webkit-app-region: no-drag;
+}
+
+#close-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: #ff5555;
+  font-size: 16px;
+  width: 24px;
+  height: 24px;
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+}
+
+#close-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
 }
 
 #progress-container {
@@ -26,6 +59,7 @@ body {
   margin-top: 10px;
   overflow: hidden;
   display: none;
+  -webkit-app-region: no-drag;
 }
 
 #progress-bar {
@@ -33,6 +67,21 @@ body {
   width: 0%;
   background: linear-gradient(90deg, #00ffcc, #00ffaa);
   transition: width 0.2s ease;
+}
+
+#grab-icon-container {
+  position: absolute;
+  top: 5px;
+  right: 15px;
+  width: 48px;
+  height: 48px;
+  opacity: 0.5;
+  -webkit-app-region: drag;
+}
+
+#grab-icon {
+  width: 100%;
+  height: 100%;
 }
 
 

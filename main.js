@@ -3,6 +3,43 @@ const { autoUpdater } = require("electron-updater");
 const log = require("electron-log");
 var choice = null;
 const { dialog } = require("electron");
+const fs = require("fs");
+const path = require("path");
+
+const versionFile = path.join(app.getPath("userData"), "version.json");
+let whatsNewWindow;
+
+function showWhatsNewWindow(version) {
+  whatsNewWindow = new BrowserWindow({
+    width: 500,
+    height: 600,
+    resizable: false,
+    title: "What's New in UltraClock",
+    modal: true,
+    parent: mainWindow,
+    webPreferences: {
+      contextIsolation: true
+    }
+  });
+
+  whatsNewWindow.loadFile("whats-new.html", {
+    query: { version }
+  });
+}
+
+function getLastVersion() {
+  try {
+    return JSON.parse(fs.readFileSync(versionFile)).version;
+  } catch {
+    return null;
+  }
+}
+function saveCurrentVersion() {
+  fs.writeFileSync(
+    versionFile,
+    JSON.stringify({ version: app.getVersion() })
+  );
+}
 
 autoUpdater.autoInstallOnAppQuit = false;
 autoUpdater.autoDownload = false;
@@ -32,6 +69,15 @@ function createWindow() {
 
 app.whenReady().then(() => {
   createWindow();
+
+  const lastVersion = getLastVersion();
+  const currentVersion = app.getVersion();
+
+  if (lastVersion && lastVersion !== currentVersion) {
+    showWhatsNewWindow(currentVersion);
+  }
+
+  saveCurrentVersion();
   autoUpdater.checkForUpdates();
 });
 

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>What's New</title>
+  <link rel="stylesheet" href="whats-new.css" />
+</head>
+<body>
+  <h1>✨ What’s New</h1>
+  <h2 id="version"></h2>
+
+  <ul>
+    <li>🚀 Faster startup time</li>
+    <li>🕒 Improved clock accuracy</li>
+    <li>🎨 New color themes</li>
+    <li>🐞 Fixed update detection bug</li>
+  </ul>
+
+  <button onclick="window.close()">Got it</button>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    document.getElementById("version").textContent =
+      "Version " + params.get("version");
+  </script>
+</body>
+</html>

@@ -115,6 +115,16 @@ autoUpdater.on("update-available", () => {
     autoUpdater.downloadUpdate();
 });
 
+autoUpdater.on("download-progress", (progress) => {
+  mainWindow.webContents.send("update-progress", {
+    percent: Math.round(progress.percent),
+    transferred: progress.transferred,
+    total: progress.total,
+    bytesPerSecond: progress.bytesPerSecond
+  });
+});
+
+
 autoUpdater.on("update-downloaded", () => {
     if (choice === null) {
         return;

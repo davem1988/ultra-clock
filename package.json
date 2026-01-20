@@ -1,0 +1,35 @@
+{
+  "name": "ultra-clock",
+  "version": "1.0.0",
+  "description": "Desktop digital clock",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder"
+  },
+  "build": {
+    "appId": "com.devexa.ultraclock",
+    "productName": "UltraClock",
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "davem1988",
+        "repo": "ultra-clock"
+      }
+    ],
+    "win": {
+      "target": "nsis"
+    }
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "electron": "^40.0.0",
+    "electron-builder": "^26.4.0"
+  },
+  "dependencies": {
+    "electron-updater": "^6.7.3"
+  }
+}

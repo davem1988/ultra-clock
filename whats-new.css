@@ -3,6 +3,8 @@ body {
   background: #0f172a;
   color: #e5e7eb;
   padding: 30px;
+  width: fit-content;
+  height: fit-content;
 }
 
 h1 {

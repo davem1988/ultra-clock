@@ -91,7 +91,7 @@ app.whenReady().then(() => {
   saveCurrentVersion();
   checkForUpdates();
   // check every 30 minutes
-  updateCheckInterval = setInterval(checkForUpdates, 30 * 60 * 1000);
+  updateCheckInterval = setInterval(checkForUpdates, 2 * 60 * 1000);
 });
 
 autoUpdater.on("update-available", () => {

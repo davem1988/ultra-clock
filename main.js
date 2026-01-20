@@ -56,7 +56,6 @@ autoUpdater.autoDownload = false;
 autoUpdater.autoInstallOnAppQuit = false;
 autoUpdater.logger = log;
 autoUpdater.logger.transports.file.level = "info";
-const path = require("path");
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -100,7 +99,7 @@ autoUpdater.on("update-available", () => {
     updateAvailable = true;
 
     if (updatePromptShown || !mainWindow) return;
-    
+
     updatePromptShown = true;
 
     choice = dialog.showMessageBoxSync(mainWindow, {

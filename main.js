@@ -1,7 +1,12 @@
 const { app, BrowserWindow } = require("electron");
 const { autoUpdater } = require("electron-updater");
 const log = require("electron-log");
+var choice = null;
+const { dialog } = require("electron");
 
+autoUpdater.autoInstallOnAppQuit = false;
+autoUpdater.autoDownload = false;
+autoUpdater.autoInstallOnAppQuit = false;
 autoUpdater.logger = log;
 autoUpdater.logger.transports.file.level = "info";
 const path = require("path");
@@ -22,12 +27,45 @@ function createWindow() {
   });
 
   win.loadFile("index.html");
-
-  // Check for updates
-  autoUpdater.checkForUpdatesAndNotify();
+  
 }
 
-app.whenReady().then(createWindow);
+app.whenReady().then(() => {
+  createWindow();
+  autoUpdater.checkForUpdates();
+});
+
+autoUpdater.on("update-available", () => {
+  choice = dialog.showMessageBoxSync(mainWindow, {
+    type: "question",
+    buttons: ["Update now", "Later"],
+    defaultId: 0,
+    cancelId: 1,
+    title: "Update available",
+    message: "A new version of UltraClock is available.",
+    detail: "Would you like to update now?"
+  });
+
+  autoUpdater.downloadUpdate();
+});
+
+autoUpdater.on("update-downloaded", () => {
+    if (choice === null) {
+        return;
+    }
+    if (choice === 0) {
+        dialog.showMessageBox(mainWindow, {
+          type: "info",
+          buttons: ["Restart & Update"],
+          defaultId: 0,
+          title: "Ready to update",
+          message: "The update has been downloaded.",
+          detail: "UltraClock will restart to apply the update."
+        }).then(() => {
+          autoUpdater.quitAndInstall();
+        });
+    }
+});
 
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") app.quit();

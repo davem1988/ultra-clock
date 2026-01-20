@@ -1,6 +1,6 @@
 {
   "name": "ultra-clock",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Desktop digital clock",
   "main": "main.js",
   "scripts": {
@@ -10,6 +10,7 @@
   "build": {
     "appId": "com.devexa.ultraclock",
     "productName": "UltraClock",
+    "artifactName": "${productName}.Setup.${version}.${ext}",
     "directories": {
       "buildResources": "build"
     },

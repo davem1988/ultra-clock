@@ -9,12 +9,12 @@ body {
   height: fit-content;
   width: 100vw;
   -webkit-app-region: drag;
+  user-select: none;
 
 }
 
 #clock {
     font-size: 48px;
-    -webkit-app-region: no-drag;
     cursor: pointer;              
 }
 

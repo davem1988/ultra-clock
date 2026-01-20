@@ -20,8 +20,11 @@ jobs:
       - name: Install dependencies 
         run: npm install
 
-      - name: Build Electron app
-        run: npm run build  # builds installer and latest.yml
+      - name: Build UltraClock
+        run: npm run build
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 
       - name: Publish release
         uses: ncipollo/release-action@v1

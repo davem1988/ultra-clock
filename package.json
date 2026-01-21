@@ -1,6 +1,6 @@
 {
   "name": "ultra-clock",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "description": "Desktop digital clock",
   "main": "main.js",
   "scripts": {
@@ -24,7 +24,7 @@
     ],
     "win": {
       "icon": "build/icon.ico",
-      "target": "nsis"
+      "target": ["nsis", "msix"]
     }
   },
   "keywords": [],

@@ -73,6 +73,8 @@ function createWindow() {
   });
 
   mainWindow.loadFile("index.html");
+
+  mainWindow.setAlwaysOnTop(true, "screen-saver");
   
 }
 

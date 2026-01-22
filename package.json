@@ -1,6 +1,6 @@
 {
   "name": "ultra-clock",
-  "version": "1.0.16",
+  "version": "1.0.17",
   "description": "Desktop digital clock",
   "main": "main.js",
   "scripts": {

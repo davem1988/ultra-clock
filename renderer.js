@@ -33,8 +33,13 @@ window.updater.onComplete(() => {
 
 function updateClock() {
   const now = new Date();
-  document.getElementById("clock").textContent =
-    now.toLocaleTimeString();
+
+  const h = String(now.getHours()).padStart(2, "0");
+  const m = String(now.getMinutes()).padStart(2, "0");
+  const s = String(now.getSeconds()).padStart(2, "0");
+
+  document.getElementById("time-main").textContent = `${h}:${m}`;
+  document.getElementById("time-sec").textContent = `:${s}`;
 }
 
 setInterval(updateClock, 1000);

@@ -86,6 +86,8 @@ function createWindow() {
 }
 
 app.whenReady().then(() => {
+  createWindow();
+
   tray = new Tray(path.join(__dirname, "build/icon.ico"));
 
   const trayMenu = Menu.buildFromTemplate([
@@ -107,14 +109,14 @@ app.whenReady().then(() => {
       }
     }
   ]);
-  
+
   tray.setToolTip("Digital Clock");
   tray.setContextMenu(trayMenu);
-  
+
   tray.on("click", () => {
     mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show();
   });
-  createWindow();
+  
 
   const lastVersion = getLastVersion();
   const currentVersion = app.getVersion();
@@ -171,6 +173,6 @@ autoUpdater.on("update-downloaded", () => {
 
 
 
-app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") app.quit();
+app.on("window-all-closed", (e) => {
+  e.preventDefault();
 });

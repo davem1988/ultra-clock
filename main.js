@@ -49,6 +49,12 @@ function saveCurrentVersion() {
 
 /* ---------------- WINDOWS ---------------- */
 
+function getAssetPath(...paths) {
+  return app.isPackaged
+    ? path.join(process.resourcesPath, ...paths)
+    : path.join(__dirname, ...paths);
+}
+
 function createMainWindow() {
   mainWindow = new BrowserWindow({
     width: 400,
@@ -67,7 +73,6 @@ function createMainWindow() {
   mainWindow.loadFile("index.html");
   mainWindow.setAlwaysOnTop(true, "screen-saver");
 
-  // IMPORTANT: do not quit app when window closes
   mainWindow.on("close", (e) => {
     e.preventDefault();
     mainWindow.hide();
@@ -77,7 +82,16 @@ function createMainWindow() {
 /* ---------------- TRAY ---------------- */
 
 function createTray() {
-  tray = new Tray(path.join(__dirname, "build/icon.png"));
+  const trayIconPath = getAssetPath("build", "tray.ico");
+
+  if (!fs.existsSync(trayIconPath)) {
+    console.error("❌ Tray icon not found:", trayIconPath);
+    return;
+  }
+
+  tray = new Tray(trayIconPath);
+
+  tray.setToolTip("UltraClock");
 
   const trayMenu = Menu.buildFromTemplate([
     {
@@ -94,7 +108,6 @@ function createTray() {
     }
   ]);
 
-  tray.setToolTip("UltraClock");
   tray.setContextMenu(trayMenu);
 
   tray.on("click", () => {
@@ -102,21 +115,19 @@ function createTray() {
     mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show();
   });
 
-  // DEBUG / FIRST-RUN CONFIRMATION
   tray.displayBalloon({
     title: "UltraClock",
-    content: "UltraClock is running in the system tray"
+    content: "Tray icon loaded successfully"
   });
 }
+
 
 /* ---------------- APP READY ---------------- */
 
 app.whenReady().then(() => {
-  createMainWindow();   // 1️⃣ window first
-  createTray();         // 2️⃣ tray second
+  createMainWindow();   
+  createTray();         
 
-  // Optional: start hidden (tray-only)
-  // mainWindow.hide();
 
   const lastVersion = getLastVersion();
   const currentVersion = app.getVersion();
@@ -130,7 +141,7 @@ app.whenReady().then(() => {
 
   saveCurrentVersion();
   checkForUpdates();
-  updateCheckInterval = setInterval(checkForUpdates, 30 * 60 * 1000);
+  updateCheckInterval = setInterval(checkForUpdates, 1 * 60 * 1000);
 });
 
 /* ---------------- UPDATER EVENTS ---------------- */
@@ -169,7 +180,6 @@ autoUpdater.on("update-downloaded", () => {
 
 /* ---------------- IMPORTANT ---------------- */
 
-// DO NOT quit when all windows are closed (tray app)
 app.on("window-all-closed", (e) => {
   e.preventDefault();
 });

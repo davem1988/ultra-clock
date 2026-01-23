@@ -10,6 +10,11 @@ let updateAvailable = false;
 let updatePromptShown = false;
 let updateCheckInterval = null;
 
+app.setLoginItemSettings({
+  openAtLogin: true,
+  openAsHidden: false
+});
+
 function checkForUpdates() {
   if (updateAvailable) return; // already found one
   autoUpdater.checkForUpdates();
@@ -135,6 +140,8 @@ autoUpdater.on("update-downloaded", () => {
         autoUpdater.quitAndInstall();
     }
 });
+
+
 
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") app.quit();

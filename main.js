@@ -82,7 +82,7 @@ function createMainWindow() {
 /* ---------------- TRAY ---------------- */
 
 function createTray() {
-  const trayIconPath = getAssetPath("build", "tray.ico");
+  const trayIconPath = getAssetPath("assets", "tray.ico");
 
   if (!fs.existsSync(trayIconPath)) {
     console.error("❌ Tray icon not found:", trayIconPath);

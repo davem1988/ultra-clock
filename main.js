@@ -12,35 +12,6 @@ let updateCheckInterval = null;
 
 let tray = null;
 
-tray = new Tray(path.join(__dirname, "build/icon.ico"));
-
-const trayMenu = Menu.buildFromTemplate([
-  {
-    label: "Show / Hide Clock",
-    click: () => {
-      if (mainWindow.isVisible()) {
-        mainWindow.hide();
-      } else {
-        mainWindow.show();
-      }
-    }
-  },
-  { type: "separator" },
-  {
-    label: "Quit",
-    click: () => {
-      app.quit();
-    }
-  }
-]);
-
-tray.setToolTip("Digital Clock");
-tray.setContextMenu(trayMenu);
-
-tray.on("click", () => {
-  mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show();
-});
-
 app.setLoginItemSettings({
   openAtLogin: true,
   openAsHidden: false
@@ -115,9 +86,35 @@ function createWindow() {
 }
 
 app.whenReady().then(() => {
-  createWindow();
+  tray = new Tray(path.join(__dirname, "build/icon.ico"));
 
+  const trayMenu = Menu.buildFromTemplate([
+    {
+      label: "Show / Hide Clock",
+      click: () => {
+        if (mainWindow.isVisible()) {
+          mainWindow.hide();
+        } else {
+          mainWindow.show();
+        }
+      }
+    },
+    { type: "separator" },
+    {
+      label: "Quit",
+      click: () => {
+        app.quit();
+      }
+    }
+  ]);
   
+  tray.setToolTip("Digital Clock");
+  tray.setContextMenu(trayMenu);
+  
+  tray.on("click", () => {
+    mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show();
+  });
+  createWindow();
 
   const lastVersion = getLastVersion();
   const currentVersion = app.getVersion();

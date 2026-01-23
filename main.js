@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow, Tray, Menu } = require("electron");
 const { autoUpdater } = require("electron-updater");
 const log = require("electron-log");
 var choice = null;
@@ -9,6 +9,37 @@ const path = require("path");
 let updateAvailable = false;
 let updatePromptShown = false;
 let updateCheckInterval = null;
+
+let tray = null;
+
+tray = new Tray(path.join(__dirname, "build/icon.ico"));
+
+const trayMenu = Menu.buildFromTemplate([
+  {
+    label: "Show / Hide Clock",
+    click: () => {
+      if (mainWindow.isVisible()) {
+        mainWindow.hide();
+      } else {
+        mainWindow.show();
+      }
+    }
+  },
+  { type: "separator" },
+  {
+    label: "Quit",
+    click: () => {
+      app.quit();
+    }
+  }
+]);
+
+tray.setToolTip("Digital Clock");
+tray.setContextMenu(trayMenu);
+
+tray.on("click", () => {
+  mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show();
+});
 
 app.setLoginItemSettings({
   openAtLogin: true,
@@ -70,7 +101,7 @@ function createWindow() {
     resizable: false,
     frame: false,
     transparent: true,
-    
+    skipTaskbar: true,
     alwaysOnTop: true,
     webPreferences: {
       preload: path.join(__dirname, "preload.js")

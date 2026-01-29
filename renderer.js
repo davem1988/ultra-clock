@@ -5,6 +5,7 @@ const closeBtnContainer = document.getElementById("close-btn-container");
 const closeBtn = document.getElementById("close-btn");
 const grabHandle = document.getElementById("grab-icon-container");
 
+
 mainWindow.addEventListener("mouseenter", () => {
   closeBtnContainer.style.display = "block";
   grabHandle.style.display = "none";

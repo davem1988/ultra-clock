@@ -104,7 +104,10 @@ function createTray() {
     { type: "separator" },
     {
       label: "Quit",
-      click: () => app.quit()
+      click: () => {
+        app.isQuitting = true;
+        app.quit()
+      }
     }
   ]);
 
@@ -180,6 +183,6 @@ autoUpdater.on("update-downloaded", () => {
 
 /* ---------------- IMPORTANT ---------------- */
 
-app.on("window-all-closed", (e) => {
-  e.preventDefault();
+app.on("window-all-closed", () => {
+  app.quit();
 });

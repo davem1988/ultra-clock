@@ -3,7 +3,9 @@ body {
   background: transparent;
   font-family: "Segoe UI", system-ui, sans-serif;
   user-select: none;
-  -webkit-app-region: drag;
+  -webkit-app-region: no-drag;
+  width: fit-content;
+  height: fit-content;
 }
 
 /* Main glass container */
@@ -11,7 +13,7 @@ body {
   width: 280px;
   padding: 16px 18px 18px;
   border-radius: 16px;
-
+  -webkit-app-region: drag;
   background: rgba(20, 20, 20, 0.123);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
@@ -64,12 +66,6 @@ body {
   transform: scale(1.05);
 }
 
-/* Drag icon */
-#grab-icon {
-  width: 20px;
-  height: 20px;
-  opacity: 0.6;
-}
 
 /* Clock */
 #clock {

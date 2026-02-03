@@ -59,6 +59,10 @@ body {
   justify-content: center;
 
   transition: background 0.2s ease, transform 0.15s ease;
+  margin-bottom: -20px;
+  margin-top: -10px;
+  margin-left: -10px;
+  padding: 0;
 }
 
 #close-btn:hover {
@@ -74,7 +78,7 @@ body {
   letter-spacing: 2px;
   text-align: center;
 
-  margin: 10px 0 6px;
+  margin: 10px 0 10px;
   -webkit-app-region: no-drag;
 
   transition: color 0.2s ease, text-shadow 0.2s ease;

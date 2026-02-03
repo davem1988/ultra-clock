@@ -3,9 +3,10 @@ body {
   background: transparent;
   font-family: "Segoe UI", system-ui, sans-serif;
   user-select: none;
-  -webkit-app-region: no-drag;
+  border: none;
   width: fit-content;
   height: fit-content;
+  -webkit-app-region: drag;
 }
 
 /* Main glass container */
@@ -13,12 +14,9 @@ body {
   width: 280px;
   padding: 16px 18px 18px;
   border-radius: 16px;
-  -webkit-app-region: drag;
   background: rgba(20, 20, 20, 0.123);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-
-
   color: #00ffcc;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
@@ -30,6 +28,8 @@ body {
 /* Header */
 #header {
   display: flex;
+  height: 100;
+  width: 100%;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 8px;
@@ -39,6 +39,11 @@ body {
 
 #main-container:hover #header {
   opacity: 1;
+}
+
+/* Rest of your elements */
+#close-btn, #clock, #progress-container {
+  -webkit-app-region: no-drag; /* everything else is not draggable */
 }
 
 /* Close button */

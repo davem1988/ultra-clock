@@ -3,18 +3,15 @@ const mainWindow = document.getElementById("main-container");
 const bar = document.getElementById("progress-bar");
 const closeBtnContainer = document.getElementById("close-btn-container");
 const closeBtn = document.getElementById("close-btn");
-const grabHandle = document.getElementById("grab-icon-container");
 let use24Hour = true;
 
 
 mainWindow.addEventListener("mouseenter", () => {
   closeBtnContainer.style.display = "block";
-  grabHandle.style.display = "none";
 });
 
 mainWindow.addEventListener("mouseleave", () => {
   closeBtnContainer.style.display = "none";
-  grabHandle.style.display = "block";
 });
 
 closeBtn.addEventListener("click", () => {

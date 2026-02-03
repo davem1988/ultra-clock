@@ -59,7 +59,10 @@ async function loadSettings() {
     const data = await fs.promises.readFile(settingsFile, "utf-8");
     return JSON.parse(data);
   } catch {
-    return { use24Hour: true };
+    return { 
+      use24Hour: true,
+      snapToEdges: true
+    };
   }
 }
 
@@ -108,17 +111,53 @@ function createMainWindow() {
   mainWindow.setAlwaysOnTop(true, "screen-saver");
 
   mainWindow.on("close", (e) => {
+    if (app.isQuitting) return; 
     e.preventDefault();
     mainWindow.hide();
   });
 
   let moveTimeout = null;
+  const SNAP_DISTANCE = 20; // pixels
 
   mainWindow.on("move", () => {
     clearTimeout(moveTimeout);
 
     moveTimeout = setTimeout(async () => {
-      const bounds = mainWindow.getBounds();
+      let bounds = mainWindow.getBounds();
+
+      if (settings.snapToEdges) {
+        const displays = screen.getAllDisplays();
+
+        // We'll snap to the closest display workArea
+        let snapped = false;
+
+        for (const display of displays) {
+          const area = display.workArea;
+
+          // Snap X
+          if (Math.abs(bounds.x - area.x) <= SNAP_DISTANCE) {
+            bounds.x = area.x;
+            snapped = true;
+          } else if (Math.abs(bounds.x + bounds.width - (area.x + area.width)) <= SNAP_DISTANCE) {
+            bounds.x = area.x + area.width - bounds.width;
+            snapped = true;
+          }
+
+          // Snap Y
+          if (Math.abs(bounds.y - area.y) <= SNAP_DISTANCE) {
+            bounds.y = area.y;
+            snapped = true;
+          } else if (Math.abs(bounds.y + bounds.height - (area.y + area.height)) <= SNAP_DISTANCE) {
+            bounds.y = area.y + area.height - bounds.height;
+            snapped = true;
+          }
+        }
+
+        if (snapped) {
+          mainWindow.setBounds(bounds);
+        }
+      }
+
       settings.windowBounds = bounds;
       await saveSettings(settings);
     }, 300);
@@ -148,7 +187,7 @@ function getSafePosition(bounds) {
 /* ---------------- TRAY ---------------- */
 
 function createTray() {
-  const trayIconPath = getAssetPath("assets", "tray.ico");
+  const trayIconPath = getAssetPath("assets", "icon48x48.png");
 
   if (!fs.existsSync(trayIconPath)) {
     console.error("❌ Tray icon not found:", trayIconPath);
@@ -160,6 +199,8 @@ function createTray() {
   tray.setToolTip("UltraClock");
 
   const trayMenu = Menu.buildFromTemplate([
+    { type: "header", label: "UltraClock", icon: path.join(__dirname, "assets/icon48x48.png") },
+    { type: "separator" },
     {
       label: "Show / Hide Clock",
       click: () => {
@@ -183,6 +224,15 @@ function createTray() {
         }
       }
     },
+    {
+      label: "Snap to edges",
+      type: "checkbox",
+      checked: settings.snapToEdges,
+      click: async (item) => {
+        settings.snapToEdges = item.checked;
+        await saveSettings(settings);
+      }
+    },
     { type: "separator" },
     {
       label: "Quit",
@@ -201,11 +251,11 @@ function createTray() {
   });
 
   setTimeout(() => {
-  tray.displayBalloon({
-    title: "UltraClock",
-    content: "UltraClock App is Ready!"
-  });
-}, 10000);
+    tray.displayBalloon({
+      title: "UltraClock",
+      content: "UltraClock App is Ready!"
+    });
+  }, 3000);
 }
 
 

@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Tray, Menu, dialog, ipcMain} = require("electron");
+const { app, BrowserWindow, Tray, Menu, dialog, ipcMain, screen} = require("electron");
 const { autoUpdater } = require("electron-updater");
 const log = require("electron-log");
 const fs = require("fs");
@@ -71,7 +71,7 @@ async function saveSettings(settings) {
   );
 }
 
-let settings = loadSettings();
+let settings = null;
 
 ipcMain.handle("get-time-format", () => {
   return settings.use24Hour;
@@ -86,9 +86,13 @@ function getAssetPath(...paths) {
 }
 
 function createMainWindow() {
+  const savedBounds = getSafePosition(settings.windowBounds);
+
   mainWindow = new BrowserWindow({
     width: 400,
     height: 150,
+    x: savedBounds?.x,
+    y: savedBounds?.y,
     frame: false,
     transparent: true,
     resizable: false,
@@ -107,6 +111,38 @@ function createMainWindow() {
     e.preventDefault();
     mainWindow.hide();
   });
+
+  let moveTimeout = null;
+
+  mainWindow.on("move", () => {
+    clearTimeout(moveTimeout);
+
+    moveTimeout = setTimeout(async () => {
+      const bounds = mainWindow.getBounds();
+      settings.windowBounds = bounds;
+      await saveSettings(settings);
+    }, 300);
+  });
+}
+
+function getSafePosition(bounds) {
+  if (!bounds) return null;
+
+  const displays = screen.getAllDisplays();
+
+  for (const display of displays) {
+    const area = display.workArea;
+    if (
+      bounds.x >= area.x &&
+      bounds.y >= area.y &&
+      bounds.x <= area.x + area.width &&
+      bounds.y <= area.y + area.height
+    ) {
+      return bounds; // valid screen
+    }
+  }
+
+  return null; // invalid → reset
 }
 
 /* ---------------- TRAY ---------------- */
@@ -175,7 +211,9 @@ function createTray() {
 
 /* ---------------- APP READY ---------------- */
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
+  settings = await loadSettings();
+
   createMainWindow();   
   createTray();         
 

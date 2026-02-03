@@ -1,8 +1,9 @@
-const { app, BrowserWindow, Tray, Menu, dialog } = require("electron");
+const { app, BrowserWindow, Tray, Menu, dialog, ipcMain} = require("electron");
 const { autoUpdater } = require("electron-updater");
 const log = require("electron-log");
 const fs = require("fs");
 const path = require("path");
+const settingsFile = path.join(app.getPath("userData"), "settings.json");
 
 let mainWindow = null;
 let tray = null;
@@ -10,6 +11,7 @@ let updateAvailable = false;
 let updatePromptShown = false;
 let updateCheckInterval = null;
 let choice = null;
+let updateCheckInProgress = false;
 
 /* ---------------- AUTO START ---------------- */
 
@@ -25,9 +27,14 @@ autoUpdater.autoInstallOnAppQuit = false;
 autoUpdater.logger = log;
 autoUpdater.logger.transports.file.level = "info";
 
-function checkForUpdates() {
-  if (!updateAvailable) {
-    autoUpdater.checkForUpdates();
+async function checkForUpdates() {
+  if (updateAvailable || updateCheckInProgress) return;
+
+  updateCheckInProgress = true;
+  try {
+    await autoUpdater.checkForUpdates();
+  } finally {
+    updateCheckInProgress = false;
   }
 }
 
@@ -46,6 +53,29 @@ function getLastVersion() {
 function saveCurrentVersion() {
   fs.writeFileSync(versionFile, JSON.stringify({ version: app.getVersion() }));
 }
+
+async function loadSettings() {
+  try {
+    const data = await fs.promises.readFile(settingsFile, "utf-8");
+    return JSON.parse(data);
+  } catch {
+    return { use24Hour: true };
+  }
+}
+
+async function saveSettings(settings) {
+  await fs.promises.writeFile(
+    settingsFile,
+    JSON.stringify(settings),
+    "utf-8"
+  );
+}
+
+let settings = loadSettings();
+
+ipcMain.handle("get-time-format", () => {
+  return settings.use24Hour;
+});
 
 /* ---------------- WINDOWS ---------------- */
 
@@ -101,6 +131,22 @@ function createTray() {
         mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show();
       }
     },
+    {
+      label: "Use 24-hour format",
+      type: "checkbox",
+      checked: settings.use24Hour,
+      click: (item) => {
+        settings.use24Hour = item.checked;
+        saveSettings(settings);
+
+        if (mainWindow) {
+          mainWindow.webContents.send(
+            "time-format-changed",
+            settings.use24Hour
+          );
+        }
+      }
+    },
     { type: "separator" },
     {
       label: "Quit",
@@ -118,10 +164,12 @@ function createTray() {
     mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show();
   });
 
+  setTimeout(() => {
   tray.displayBalloon({
     title: "UltraClock",
-    content: "Tray icon loaded successfully"
+    content: "UltraClock App is Ready!"
   });
+}, 10000);
 }
 
 

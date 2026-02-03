@@ -4,6 +4,7 @@ const bar = document.getElementById("progress-bar");
 const closeBtnContainer = document.getElementById("close-btn-container");
 const closeBtn = document.getElementById("close-btn");
 const grabHandle = document.getElementById("grab-icon-container");
+let use24Hour = true;
 
 
 mainWindow.addEventListener("mouseenter", () => {
@@ -35,13 +36,31 @@ window.updater.onComplete(() => {
 function updateClock() {
   const now = new Date();
 
-  const h = String(now.getHours()).padStart(2, "0");
+  let hours = now.getHours();
+  let suffix = "";
+
+  if (!use24Hour) {
+    suffix = hours >= 12 ? " PM" : " AM";
+    hours = hours % 12 || 12;
+  }
+
+  const h = String(hours).padStart(2, "0");
   const m = String(now.getMinutes()).padStart(2, "0");
   const s = String(now.getSeconds()).padStart(2, "0");
 
   document.getElementById("time-main").textContent = `${h}:${m}`;
-  document.getElementById("time-sec").textContent = `:${s}`;
+  document.getElementById("time-sec").textContent = `:${s}${suffix}`;
 }
+
+window.clockSettings.getFormat().then((value) => {
+  use24Hour = value;
+  updateClock();
+});
+
+window.clockSettings.onFormatChange((value) => {
+  use24Hour = value;
+  updateClock();
+});
 
 setInterval(updateClock, 1000);
 updateClock();

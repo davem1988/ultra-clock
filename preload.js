@@ -6,4 +6,9 @@ contextBridge.exposeInMainWorld("updater", {
 
 });
 
+contextBridge.exposeInMainWorld("clockSettings", {
+  getFormat: () => ipcRenderer.invoke("get-time-format"),
+  onFormatChange: (cb) => ipcRenderer.on("time-format-changed", (_, v) => cb(v))
+});
+
 
